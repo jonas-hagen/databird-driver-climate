@@ -4,7 +4,7 @@ from databird import utils
 import cdsapi
 
 
-class ClimateDriver(BaseDriver):
+class C3SDriver(BaseDriver):
     """
     Databird driver for the Copernicus Climate Change Service (C3S)
 
@@ -17,18 +17,18 @@ class ClimateDriver(BaseDriver):
     key: 1234:3c417487-510f-4972-9e86-95dab485d607
     name: reanalysis-era5-complete
     request:
-      dataset: era5,
-      class: ea,
-      type: an,
-      stream: oper,
-      expver: 1,
-      levtype: ml,
-      levelist: 71,
-      param: 131,
-      area: 70/-130/30/-60,
-      grid: 2/2,
-      date: "{time:%Y-%m-%d}",
-      time: "{time:%H}",
+      dataset: era5
+      class: ea
+      type: an
+      stream: oper
+      expver: 1
+      levtype: ml
+      levelist: 71
+      param: 131
+      area: 70/-130/30/-60
+      grid: 2/2
+      date: "{time:%Y-%m-%d}"
+      time: "{time:%H}"
     ```
     """
 
