@@ -1,7 +1,7 @@
 from databird import BaseDriver
 from databird import ConfigurationError
 from databird import utils
-import cdsapi
+from . import c3s_api
 
 
 class C3SDriver(BaseDriver):
@@ -12,9 +12,10 @@ class C3SDriver(BaseDriver):
       - name: The C3S dataset name.
       - request: C3S request details as dict.
 
-    Example configuration (key is optional and can be provided by `~/.cdsapirc`):
+    Example configuration:
     ```
-    key: 1234:3c417487-510f-4972-9e86-95dab485d607
+    uid: 1234
+    key: 3c417487-510f-4972-9e86-95dab485d607
     name: reanalysis-era5-complete
     request:
       dataset: era5
@@ -36,9 +37,11 @@ class C3SDriver(BaseDriver):
     def check_config(cls, config):
         super().check_config(config)
         if "name" not in config or "request" not in config:
-            raise ConfigurationError("name and request are missing")
+            raise ConfigurationError("name or request are missing")
         if not isinstance(config["request"], dict):
             raise ConfigurationError("request must be of type dict")
+        if "key" not in config or "uid" not in config:
+            raise ConfigurationError("User id (uid) and API key (key) are required.")
 
     def is_available(self, context):
         return True
@@ -46,13 +49,12 @@ class C3SDriver(BaseDriver):
     def retrieve_single(self, context, target, name):
         if name not in ["grib2", "grib"]:
             raise ValueError("Only 'grib2' target is supported for now.")
-        if "key" in self._config:
-            params = dict(
-                key=self._config["key"], url="https://cds.climate.copernicus.eu/api/v2"
-            )
-        else:
-            params = dict()
+        uid = self._config["uid"]
+        key = self._config["key"]
+        url = "https://cds.climate.copernicus.eu/api/v2"
         request = utils.render_dict(self._config["request"], context)
-        cds_name = self._config["name"]
-        client = cdsapi.Client(**params)
-        client.retrieve(cds_name, request, target)
+        service_name = self._config["name"]
+        client = c3s_api.Client(url, uid, key)
+        r = client.submit(service_name, request)
+        client.wait(r.request_id, verbose=True)
+        return client.download(r.request_id, target)
