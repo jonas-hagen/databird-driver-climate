@@ -80,9 +80,16 @@ class GesDiscDriver(BaseDriver):
                     print("droppig var " + var)
                     ds = ds.drop(var)
 
-        subset = {var: parse_slice(s) for var, s in self._config["subset"].items()}
+        def parse(s):
+            try:
+                return int(s)
+            except:
+                return parse_slice(s)
+
+        subset = {var: parse(s) for var, s in self._config["subset"].items()}
         print("Subset: " + str(subset))
-        ds = ds.isel(**subset)
+        ds = ds.isel(**subset, drop=False)
 
         print("Save to disk")
+        ds.attrs["databird_history"] = "subset=" + str(subset)
         ds.to_netcdf(target)
