@@ -21,5 +21,13 @@ setuptools.setup(
     python_requires=">=3.5.*, <4",
     version=VERSION,
     url="https://github.com/jonas-hagen/databird-driver-climate",
-    install_requires=["databird", "cdsapi"],
+    install_requires=[
+        "databird",
+        "cdsapi",
+        "ecmwf-api-client",
+        "pydap",
+        "lxml",
+        "xarray",
+        "netcdf4",
+    ],
 )
