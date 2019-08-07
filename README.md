@@ -33,7 +33,7 @@ profiles:
   ecmwf:
     driver: climate.EcmwfDriver
     configuration:
-      key: 1122334455aabbccddeeff
+      key: env:$ECMWF_API_KEY
       email: "someone@example.com"
 
   gesdisc:
