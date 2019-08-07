@@ -69,16 +69,20 @@ class GesDiscDriver(BaseDriver):
             self._config["login"], self._config["password"], check_url=url
         )
         print("Connection established")
+
         store = xr.backends.PydapDataStore.open(url, session=session)
         ds = xr.open_dataset(store)
         print("Dataset indexed")
-        subset = {var: parse_slice(s) for var, s in self._config["subset"].items()}
-        print("subset: " + str(subset))
-        ds = ds.isel(**subset)
-        if self._config["variables"]:
+
+        if "variables" in self._config:
             for var in ds.variables:
                 if var not in ds.dims and var not in self._config["variables"]:
                     print("droppig var " + var)
                     ds = ds.drop(var)
-        print("save to disk")
+
+        subset = {var: parse_slice(s) for var, s in self._config["subset"].items()}
+        print("Subset: " + str(subset))
+        ds = ds.isel(**subset)
+
+        print("Save to disk")
         ds.to_netcdf(target)
