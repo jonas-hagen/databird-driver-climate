@@ -1,3 +1,5 @@
+[![Build Status](https://www.travis-ci.org/jonas-hagen/databird-driver-climate.svg?branch=master)](https://www.travis-ci.org/jonas-hagen/databird-driver-climate)
+
 # databird-driver-climate
 
 Data sources for climate and atmospheric research:
